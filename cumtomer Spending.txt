@@ -12,3 +12,25 @@ HAVING
      SUM(i.total_price)<0.25*(SELECT AVG(total_price) FROM invoice)
 ORDER BY
       ROUND(SUM(i.total_price), 6) DESC;
+
+
+
+## New Solution ## --- For ROUND(6) error, I used CAST(...AS DECIMAL(12,6)); Ensures the output explicity displays 6 decimal places as required ----
+
+
+///   UPDATED SOLUTION   ///
+
+
+
+SELECT
+     c.customer_name, CAST(ROUND(SUM(i.total_price), 6)AS DECIMAL(12,6))AS total_spent
+FROM 
+     customer AS c
+JOIN
+     invoice AS i ON c.id=i.customer_id
+GROUP BY
+     c.id,c.customer_name
+HAVING 
+     SUM(i.total_price)<=0.25*(SELECT AVG(total_price) FROM invoice)
+ORDER BY
+      total_spent DESC;
